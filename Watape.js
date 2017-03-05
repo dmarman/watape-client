@@ -4,7 +4,7 @@ const axios			= require('axios');
 const urlConstants 	= require('./apiEndpoints');
 const hostUrl 		= process.env.APP_URL;
 const fs			= require('fs');
-const EventEmitter = require('events');
+const sleep 		= require('system-sleep');
 
 class Watape {
 	constructor(pusher) {
@@ -44,38 +44,64 @@ class Watape {
 			});
 	}
 
+	processManager(){
+		console.log('Getting queued track list');
+		this.queuedTracks().then((response) => {
+
+			this.processTracks(response.data.data);
+
+		})
+	}
+
+	processTracks(queuedTracks){
+		if(queuedTracks.length != 0){
+			console.log('Start recording: ', queuedTracks[0].track.id);
+			sleep(1000);
+			console.log('Recorded', queuedTracks[0].track.id);
+			this.putStatus(queuedTracks[0], 'recorded').then((response) => {
+				queuedTracks.splice(0, 1);
+				this.processTracks(queuedTracks);
+			});
+		} else {
+			console.log('There is no more queued tracks');
+		}
+	}
+
 	downloadTracks(){
+		console.log('get file list');
 		this.queuedFiles().then((response)=> {
-			let queuedTracks = response.data.data;
-			this.storeQueuedTracks(queuedTracks);
+			if(response.data.data.length != 0){
+				let queuedTracks = response.data.data;
+				this.storeQueuedTracksSync(queuedTracks);
+			} else {
+				console.log('No files to download');
+			}
 		});
 	}
 
-	storeQueuedTracks(queuedTracks){
-		Object.keys(queuedTracks).forEach(key => {
-			this.download(queuedTracks[key].track)
-				.then((download) => {
-					this.storeTrack(queuedTracks[key].track.name, download.data)
-						.then(() => {
-							return new Promise(function(resolve, reject){
-								//TODO meter el storeTrack directamente en download?
-							});
-						});
+	storeQueuedTracksSync(queuedTracks){
+		console.log('Downloading: ' + queuedTracks[0].track.id);
+		this.download(queuedTracks[0].track)
+			.then((download) => {
+				console.log('Downloaded: ' + queuedTracks[0].track.id); //TODO check that status is waiting before downloading
+				this.storeTrack(queuedTracks[0].track.name, download.data);
+				this.putStatus(queuedTracks[0], 'downloaded').then(() => {
+					if(queuedTracks.length > 1){
+						queuedTracks.splice(0, 1);
+						this.storeQueuedTracksSync(queuedTracks)
+					}
 				});
-		});
+			});
 	}
+
+
 
 	storeTrack(fileName, file){
 		fs.writeFileSync(process.env.LOCAL_TRACKS_DIR + fileName, file);
-		return new Promise(function(resolve, reject){
-			resolve('yes');
-		});
+		console.log('Stored: ' + fileName);
 	}
 
-
-
 	download(track){
-
 		var url  	= hostUrl + urlConstants.track.DOWNLOAD.url + track.id;
 		var method	= urlConstants.track.DOWNLOAD.method;
 		
@@ -92,18 +118,20 @@ class Watape {
 		var userChannel = 'private-App.User.' + queuedTrack.track.user_id;
 		var method		= urlConstants.queuedTrack.UPDATE_STATUS.method;
 
-		axios({url: url, method: method, data: data})
+		return axios({url: url, method: method, data: data})
 			.then((response) => {
-				console.log(response.data.status)})
+				console.log('Status updated: ' + response.data.status);
+				this.pusher.trigger(userChannel, 'App\\Events\\trackStatus', {
+					trackQueued: queuedTrack,
+					status: status
+				});
+			})
 			.catch(function (error) {
 				console.log('Could not putStatus');
 				console.log(error);
 			});
 
-		this.pusher.trigger(userChannel, 'App\\Events\\trackStatus', {
-			trackQueued: queuedTrack,
-			status: status
-		});
+		
 	}
 }
 

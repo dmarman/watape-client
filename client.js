@@ -1,5 +1,5 @@
 'use strict';
-
+console.log('init');
 require('dotenv').config();
 const Pusher 		= require('pusher');
 const PusherClient 	= require('pusher-client');
@@ -8,6 +8,7 @@ const fs			= require('fs');
 const urlConstants 	= require('./apiEndpoints');
 const QueuedTrack 	= require('./QueuedTrack.js');
 const Watape		= require('./Watape.js');
+const sleep 		= require('system-sleep');
 
 const socket = new PusherClient(process.env.PUSHER_APP_KEY, {
 	encrypted: 	true,
@@ -26,7 +27,7 @@ const my_channel = socket.subscribe('private-Tape.Client');
 const watape = new Watape(pusher);
 
 watape.downloadTracks();
-
+watape.processManager();
 
 
 // watape.firstInQueue()
