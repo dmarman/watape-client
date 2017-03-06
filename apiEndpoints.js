@@ -25,6 +25,10 @@ var urlConstants =  {
         GET_QUEUED_TRACKS: {
             method: 'GET',
             url: '/queue/tracks'
+        },
+        GET_QUEUED_UPLOADS: {
+            method: 'GET',
+            url: '/queue/uploads'
         }
     },
     file: {

@@ -44,26 +44,56 @@ class Watape {
 			});
 	}
 
+    queuedUploads(){
+        var url		= hostUrl + urlConstants.queue.GET_QUEUED_UPLOADS.url;
+        var method	= urlConstants.queue.GET_QUEUED_UPLOADS.method;
+
+        return axios({url: url, method: method})
+            .catch(function (error) {
+                console.log('Could not get queuedTracks');
+                console.log(error);
+            });
+    }
+
+	uploadManager(){
+        console.log('Getting queued upload list');
+        this.queuedUploads().then((response) => {
+            this.uploadTracks(response.data.data);
+        })
+    }
+
+    uploadTracks(queuedTracks){
+        if(queuedTracks.length != 0 && queuedTracks[0].status == 'recorded'){
+            console.log('Start uploading: ', queuedTracks[0].track.id); //TODO implement upload
+            sleep(1000);
+            console.log('Uploaded', queuedTracks[0].track.id);
+            queuedTracks.splice(0, 1);
+            this.uploadTracks(queuedTracks);
+        } else {
+            console.log('There is no more tracks to upload');
+        }
+    }
+
 	processManager(){
 		console.log('Getting queued track list');
 		this.queuedTracks().then((response) => {
-
 			this.processTracks(response.data.data);
-
 		})
 	}
 
 	processTracks(queuedTracks){
-		if(queuedTracks.length != 0){
+		if(queuedTracks.length != 0){ //TODO check status
+
 			console.log('Start recording: ', queuedTracks[0].track.id);
 			sleep(1000);
 			console.log('Recorded', queuedTracks[0].track.id);
+
 			this.putStatus(queuedTracks[0], 'recorded').then((response) => {
 				queuedTracks.splice(0, 1);
 				this.processTracks(queuedTracks);
 			});
 		} else {
-			console.log('There is no more queued tracks');
+			console.log('There is no more tracks to process');
 		}
 	}
 
@@ -86,7 +116,7 @@ class Watape {
 				console.log('Downloaded: ' + queuedTracks[0].track.id); //TODO check that status is waiting before downloading
 				this.storeTrack(queuedTracks[0].track.name, download.data);
 				this.putStatus(queuedTracks[0], 'downloaded').then(() => {
-					if(queuedTracks.length > 1){
+					if(queuedTracks.length > 1){ //TODO check this condition, should be earlier. Check status
 						queuedTracks.splice(0, 1);
 						this.storeQueuedTracksSync(queuedTracks)
 					}
