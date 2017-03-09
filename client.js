@@ -6,9 +6,9 @@ const PusherClient 	= require('pusher-client');
 const axios			= require('axios');
 const fs			= require('fs');
 const urlConstants 	= require('./apiEndpoints');
-const QueuedTrack 	= require('./QueuedTrack.js');
 const Watape		= require('./Watape.js');
 const sleep 		= require('system-sleep');
+
 
 const socket = new PusherClient(process.env.PUSHER_APP_KEY, {
 	encrypted: 	true,

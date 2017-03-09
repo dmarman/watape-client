@@ -27,6 +27,7 @@ class Queue {
                 console.log(error);
             });
     }
+    
 }
 
 module.exports = new Queue();
