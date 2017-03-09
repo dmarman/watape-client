@@ -5,10 +5,13 @@ const urlConstants 	= require('./apiEndpoints');
 const hostUrl 		= process.env.APP_URL;
 const fs			= require('fs');
 const sleep 		= require('system-sleep');
+const queue			= require('./Queue.js');
 
 class Watape {
+    
 	constructor(pusher) {
 		this.pusher	= pusher;
+    
 	}
 
 	firstInQueue(){
@@ -21,43 +24,10 @@ class Watape {
     					console.log(error);
 					});
 	}
-	
-	queuedFiles() {
-		var url		= hostUrl + urlConstants.queue.GET_QUEUED_FILES.url;
-		var method	= urlConstants.queue.GET_QUEUED_FILES.method;
-		
-		return axios({url: url, method: method})
-			.catch(function (error) {
-				console.log('Could not get queuedFiles');
-				console.log(error);
-			});
-	}
-	
-	queuedTracks(){
-		var url		= hostUrl + urlConstants.queue.GET_QUEUED_TRACKS.url;
-		var method	= urlConstants.queue.GET_QUEUED_TRACKS.method;
-
-		return axios({url: url, method: method})
-			.catch(function (error) {
-				console.log('Could not get queuedTracks');
-				console.log(error);
-			});
-	}
-
-    queuedUploads(){
-        var url		= hostUrl + urlConstants.queue.GET_QUEUED_UPLOADS.url;
-        var method	= urlConstants.queue.GET_QUEUED_UPLOADS.method;
-
-        return axios({url: url, method: method})
-            .catch(function (error) {
-                console.log('Could not get queuedTracks');
-                console.log(error);
-            });
-    }
 
 	uploadManager(){
         console.log('Getting queued upload list');
-        this.queuedUploads().then((response) => {
+        queue.get('uploads').then((response) => {
             this.uploadTracks(response.data.data);
         })
     }
@@ -76,7 +46,7 @@ class Watape {
 
 	processManager(){
 		console.log('Getting queued track list');
-		this.queuedTracks().then((response) => {
+		queue.get('tracks').then((response) => {
 			this.processTracks(response.data.data);
 		})
 	}
@@ -99,7 +69,7 @@ class Watape {
 
 	downloadTracks(){
 		console.log('get file list');
-		this.queuedFiles().then((response)=> {
+		queue.get('files').then((response)=> {
 			if(response.data.data.length != 0){
 				let queuedTracks = response.data.data;
 				this.storeQueuedTracksSync(queuedTracks);
