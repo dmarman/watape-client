@@ -8,6 +8,25 @@ const fs			= require('fs');
 class Track {
     constructor(track){
         this.track = track;
+        this.id = track.id;
+    }
+    
+    upload() {
+        console.log('uploading: ' + this.track.id);
+        return new Promise (function(resolve, reject){
+            setTimeout(function(){
+                resolve('success');
+            }, 2000);
+        })
+    }
+
+    record() {
+        console.log('recording: ' + this.track.id);
+        return new Promise (function(resolve, reject){
+            setTimeout(function(){
+                resolve('success');
+            }, 2000);
+        })
     }
     
     download(){

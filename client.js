@@ -26,9 +26,12 @@ const my_channel = socket.subscribe('private-Tape.Client');
 
 const watape = new Watape(pusher);
 
-watape.downloadTracks();
-watape.processManager();
-watape.uploadManager();
+watape.manager.downloader();
+watape.manager.recorder();
+watape.manager.uploader();
+// watape.downloadTracks();
+//watape.processManager();
+//watape.uploadManager();
 
 
 

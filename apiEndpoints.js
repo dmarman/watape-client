@@ -18,17 +18,37 @@ var urlConstants =  {
         }
     },
     queue: {
-        GET_QUEUED_FILES: {
+        GET_QUEUE_WAITING: {
             method: 'GET',
-            url: '/queue/files'
+            url: '/queue/waiting'
         },
-        GET_QUEUED_TRACKS: {
+        GET_QUEUE_DOWNLOADED: {
             method: 'GET',
-            url: '/queue/tracks'
+            url: '/queue/downloaded'
         },
-        GET_QUEUED_UPLOADS: {
+        GET_QUEUE_RECORDED: {
             method: 'GET',
-            url: '/queue/uploads'
+            url: '/queue/recorded'
+        },
+        GET_QUEUE_UPLOADED: {
+            method: 'GET',
+            url: '/queue/uploaded'
+        },
+        GET_FIRST_WAITING: {
+            method: 'GET',
+            url: '/queue/waiting/first'
+        },
+        GET_FIRST_DOWNLOADED: {
+            method: 'GET',
+            url: '/queue/downloaded/first'
+        },
+        GET_FIRST_RECORDED: {
+            method: 'GET',
+            url: '/queue/recorded/first'
+        },
+        GET_FIRST_UPLOADED: {
+            method: 'GET',
+            url: '/queue/uploaded/first'
         }
     },
     file: {
