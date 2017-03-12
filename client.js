@@ -34,6 +34,3 @@ socket.bind('App\\Events\\newTrackQueued',
         }
 	}
 );
-
-
-//axios({url: 'http://127.0.0.1', method: 'GET'}).then((response) => {console.log(response)});

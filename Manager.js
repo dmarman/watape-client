@@ -16,9 +16,8 @@ class Manager {
     downloader() {
         this.downloading = true;
         queue.first('waiting').then((response) => {
-            if(response.data.data != null){
-
-                let job = new Job(response.data.data);
+            if(response != null){
+                let job = new Job(response);
                 job.track.download() //TODO manage when one of the steps fails, script stops running, set status failed and go on working
                     .then(() => {
                         job.put().status('downloaded')
@@ -43,14 +42,11 @@ class Manager {
     recorder() {
         this.recording = true;
         queue.first('downloaded').then((response) => {
-            if(response.data.data != null) {
-
-                let job = new Job(response.data.data);
+            if(response != null) {
+                let job = new Job(response);
                 job.track.record()
                     .then((response) => {
-                        //console.log(response.data);
                         if (response == 'success') {
-                            console.log('recorded: ' + job.track.id); // TODO this should be inside record() method
                             job.put().status('recorded')
                                 .then(() => {
                                     this.notification.status(job.job, 'recorded');
@@ -75,28 +71,21 @@ class Manager {
     uploader() {
         this.uploading = true;
         queue.first('recorded').then((response) => {
-            if(response.data.data != null) {
-
-                let job = new Job(response.data.data);
-                let record = new Record(response.data.data);
+            if(response != null) {
+                let job = new Job(response);
+                let record = new Record(response);
                 record.upload()
                     .then((response) => {
-                        if (response.data.success == true) {
-                            console.log('uploaded: ' + job.track.id); // TODO this should be inside record() method
-                            job.put().status('uploaded')
-                                .then(() => {
-                                    this.notification.status(job.job, 'uploaded');
-                                    record.delete();
-                                    this.uploader();
-                                });
-                        }
+                        job.put().status('uploaded')
+                            .then(() => {
+                                this.notification.status(job.job, 'uploaded');
+                                record.delete();
+                                this.uploader();
+                            });
                     });
             } else {
                 this.uploading = false;
                 console.log('No tracks waiting to be uploaded');
-                if(this.downloading == false){
-                    //this.downloader();
-                }
             }
         });
     }

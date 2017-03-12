@@ -28,7 +28,12 @@ class Record extends Track {
         data.append('file', fs.createReadStream('./records/' + this.name));
 
         return axios.post(url, data, {headers: data.getHeaders()})
-            .then()
+            .then((response) => {
+                if (response.data.success == true) {
+                    console.log('uploaded: ' + response.data.record.track_id);
+                    return response
+                }
+            })
             .catch((error) => {
                 console.log(error);
             });

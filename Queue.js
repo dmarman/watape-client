@@ -51,6 +51,9 @@ class Queue {
         }
 
         return axios({url: url, method: method})
+            .then((response) => {
+                return response.data.data;
+            })
             .catch(function (error) {
                 console.log('Could not get first of queue of ' + listName);
                 console.log(error);
