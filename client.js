@@ -22,15 +22,13 @@ const my_channel = socket.subscribe('private-Tape.Client');
 
 const watape = new Watape(pusher);
 
-watape.manager.downloader();
-watape.manager.recorder();
-watape.manager.uploader();
+watape.init();
 
 socket.bind('App\\Events\\newTrackQueued',
-	function(data) {
+    function(data) {
         if(watape.manager.downloading == false){
             watape.manager.downloading = true;
             watape.manager.downloader();
         }
-	}
+    }
 );

@@ -8,8 +8,13 @@ class Watape {
     
 	constructor(pusher) {
 		this.pusher	= pusher;
-        this.notification = new Notification(pusher);
 		this.manager = new Manager(pusher);
+	}
+
+	init(){
+		this.manager.downloader();
+		this.manager.recorder();
+		this.manager.uploader();
 	}
 
 }

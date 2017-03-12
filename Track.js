@@ -21,7 +21,7 @@ class Track {
         var method	= urlConstants.record.UPLOAD.method;
 
         const data = new FormData();
-        if(jobId != null){
+        if(jobId != null){ //TODO this can be deleted
              data.append('trackId', this.id);
              data.append('queuedTrackId', jobId);
         }
