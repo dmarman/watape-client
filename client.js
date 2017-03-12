@@ -29,11 +29,6 @@ const watape = new Watape(pusher);
 watape.manager.downloader();
 watape.manager.recorder();
 watape.manager.uploader();
-// watape.downloadTracks();
-//watape.processManager();
-//watape.uploadManager();
-
-
 
 // watape.firstInQueue()
 //   	.then((response) => {

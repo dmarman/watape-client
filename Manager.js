@@ -3,6 +3,7 @@
 const queue = require('./Queue.js');
 const Job   = require('./Job.js');
 const Notification = require('./Notification.js');
+const Record = require('./Record.js');
 
 class Manager {
     constructor(pusher) {
@@ -16,8 +17,7 @@ class Manager {
                 job.track.download() //TODO manage when one of the steps fails, script stops running, set status failed and go on working
                     .then(() => {
                         job.put().status('downloaded')
-                            .then((response) => {
-                                console.log(response);
+                            .then(() => {
                                 this.notification.status(job.job, 'downloaded');
                                 this.downloader();
                             });
@@ -34,11 +34,13 @@ class Manager {
                 let job = new Job(response.data.data);
                 job.track.record()
                     .then((response) => {
+                        //console.log(response.data);
                         if (response == 'success') {
                             console.log('recorded: ' + job.track.id); // TODO this should be inside record() method
                             job.put().status('recorded')
                                 .then(() => {
                                     this.notification.status(job.job, 'recorded');
+                                    job.track.delete();
                                     this.recorder();
                                 });
                         }
@@ -53,13 +55,15 @@ class Manager {
         queue.first('recorded').then((response) => {
             if(response.data.data != null) {
                 let job = new Job(response.data.data);
-                job.track.upload()
+                let record = new Record(response.data.data);
+                record.upload()
                     .then((response) => {
-                        if (response == 'success') {
+                        if (response.data.success == true) {
                             console.log('uploaded: ' + job.track.id); // TODO this should be inside record() method
                             job.put().status('uploaded')
                                 .then(() => {
                                     this.notification.status(job.job, 'uploaded');
+                                    record.delete();
                                     this.uploader();
                                 });
                         }

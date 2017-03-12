@@ -17,6 +17,12 @@ var urlConstants =  {
             url: '/track/download/'
         }
     },
+    record: {
+        UPLOAD: {
+            method: 'POST',
+            url: '/record'
+        }
+    },
     queue: {
         GET_QUEUE_WAITING: {
             method: 'GET',

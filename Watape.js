@@ -16,34 +16,7 @@ class Watape {
         this.notification = new Notification(pusher);
 		this.manager = new Manager(pusher);
 	}
-    
-	uploadManager(){
-        console.log('Getting queued upload list');
-        queue.get('recorded').then((response) => {
-            this.uploadTracks(response.data.data);
-        })
-    }
 
-    uploadTracks(queuedTracks){
-        if(queuedTracks.length != 0 && queuedTracks[0].status == 'recorded'){
-            console.log('Start uploading: ', queuedTracks[0].track.id); //TODO implement upload
-            sleep(1000);
-            console.log('Uploaded', queuedTracks[0].track.id);
-            var job = new Job(queuedTracks[0]);
-            job.put().status('uploaded')
-                .then((response) => {
-                    this.notification.status(queuedTracks[0], 'uploaded');
-                    queuedTracks.splice(0, 1);
-                    this.uploadTracks(queuedTracks);
-                });
-
-        } else {
-            console.log('There is no more tracks to upload');
-        }
-    }
-
-	
-	    
 }
 
 module.exports = Watape;
