@@ -26,31 +26,14 @@ watape.manager.downloader();
 watape.manager.recorder();
 watape.manager.uploader();
 
-// watape.firstInQueue()
-//   	.then((response) => {
-// 		let queuedTrack = response.data.queuedTrack;
-//		
-// 		if(queuedTrack != 'empty'){
-// 			watape.putStatus(queuedTrack, 'Starting');
-//
-// 			watape.download(queuedTrack.track)
-// 				.then((response) => {
-// 					fs.writeFileSync(process.env.LOCAL_TRACKS_DIR + queuedTrack.track.name, response.data);
-// 					console.log('saved');
-// 					watape.putStatus(queuedTrack, 'Downloaded');
-// 					watape.firstInQueue().then((response) => {console.log(response.data)}); //TODO need more specification in firstIn, it needs to keep downloading tracks which are not processed
-// 				});
-// 		} else {
-// 			console.log('empty');
-// 		}
-// 	});
-
-// socket.bind('App\\Events\\newTrackQueued',
-// 	function(data) {
-// 		const queuedTrack = new QueuedTrack(data.queuedTrack, urlConstants, hostUrl, axios, pusher);
-// 		queuedTrack.putStatus('startRecording');
-// 	}
-// );
+socket.bind('App\\Events\\newTrackQueued',
+	function(data) {
+        if(watape.manager.downloading == false){
+            watape.manager.downloading = true;
+            watape.manager.downloader();
+        }
+	}
+);
 
 
 //axios({url: 'http://127.0.0.1', method: 'GET'}).then((response) => {console.log(response)});

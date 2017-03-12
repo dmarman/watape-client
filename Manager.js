@@ -8,11 +8,16 @@ const Record = require('./Record.js');
 class Manager {
     constructor(pusher) {
         this.notification = new Notification(pusher);
+        this.downloading  = false;
+        this.recording    = false;
+        this.uploading    = false;
     }
 
     downloader() {
+        this.downloading = true;
         queue.first('waiting').then((response) => {
             if(response.data.data != null){
+
                 let job = new Job(response.data.data);
                 job.track.download() //TODO manage when one of the steps fails, script stops running, set status failed and go on working
                     .then(() => {
@@ -20,17 +25,26 @@ class Manager {
                             .then(() => {
                                 this.notification.status(job.job, 'downloaded');
                                 this.downloader();
+                                if(this.recording == false){
+                                    this.recorder();
+                                }
                             });
                     });
             } else {
+                this.downloading = false;
                 console.log('No tracks waiting to be downloaded');
+                if(this.recording == false){
+                    this.recorder();
+                }
             }
         });
     }
 
     recorder() {
+        this.recording = true;
         queue.first('downloaded').then((response) => {
             if(response.data.data != null) {
+
                 let job = new Job(response.data.data);
                 job.track.record()
                     .then((response) => {
@@ -42,18 +56,27 @@ class Manager {
                                     this.notification.status(job.job, 'recorded');
                                     job.track.delete();
                                     this.recorder();
+                                    if(this.uploading == false){
+                                        this.uploader();
+                                    }
                                 });
                         }
                     });
             } else {
+                this.recording = false;
                 console.log('No tracks waiting to be recorded');
+                if(this.uploading == false){
+                    this.uploader();
+                }
             }
         });
     }
 
     uploader() {
+        this.uploading = true;
         queue.first('recorded').then((response) => {
             if(response.data.data != null) {
+
                 let job = new Job(response.data.data);
                 let record = new Record(response.data.data);
                 record.upload()
@@ -69,7 +92,11 @@ class Manager {
                         }
                     });
             } else {
+                this.uploading = false;
                 console.log('No tracks waiting to be uploaded');
+                if(this.downloading == false){
+                    //this.downloader();
+                }
             }
         });
     }
