@@ -1,6 +1,5 @@
 'use strict';
 
-
 class Notification {
     constructor(pusher){
         this.pusher = pusher;

@@ -5,14 +5,12 @@ const hostUrl 		= process.env.APP_URL;
 const axios			= require('axios');
 const Track         = require('./Track.js');
 
-
 class Job {
     constructor(job) {
         this.job = job;
         this.status = job.status;
         this.id = job.id;
         this.track = new Track(job.track);
-        
     }
     
     put(){
@@ -35,9 +33,6 @@ class Job {
             }
         }
     }
-    
-
-
     
 }
 
