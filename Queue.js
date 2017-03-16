@@ -24,7 +24,7 @@ class Queue {
             console.log('Error: that list name does not exist');
         }
 
-        return axios({url: url, method: method})
+        return axios({url: url, method: method, headers: {'api-token': process.env.WATAPE_KEY}})
             .catch(function (error) {
                 console.log('Could not get queue of ' + listName);
                 console.log(error);
@@ -50,7 +50,7 @@ class Queue {
             console.log('Error: that list name does not exist, cannot get first');
         }
 
-        return axios({url: url, method: method})
+        return axios({url: url, method: method, headers: {'api-token': process.env.WATAPE_KEY}})
             .then((response) => {
                 return response.data.data;
             })

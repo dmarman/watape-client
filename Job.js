@@ -22,7 +22,7 @@ class Job {
                 var method = urlConstants.queuedTrack.UPDATE_STATUS.method;
                 this.status = jobStatus;
                 
-                return axios({url: url, method: method, data: data})
+                return axios({url: url, method: method, data: data, headers: {'api-token': process.env.WATAPE_KEY}})
                     .then((response) => {
                         console.log('Status: ' + response.data.status);
                     })

@@ -16,7 +16,8 @@ class Track {
     
     upload(jobId = null) {
         console.log('uploading: ' + this.track.id);
-
+        
+        var headers;
         var url  	= hostUrl + urlConstants.record.UPLOAD.url;
         var method	= urlConstants.record.UPLOAD.method;
 
@@ -26,8 +27,11 @@ class Track {
              data.append('queuedTrackId', jobId);
         }
         data.append('file', fs.createReadStream('./records/' + this.name));
+
+        headers = data.getHeaders();
+        headers['api-token'] = process.env.WATAPE_KEY;
         
-        return axios.post(url, data, {headers: data.getHeaders()})
+        return axios.post(url, data, {headers: headers})
                     .then()
                     .catch((error) => {
                         console.log(error);
@@ -63,7 +67,7 @@ class Track {
         var url  	= hostUrl + urlConstants.track.DOWNLOAD.url + this.track.id;
         var method	= urlConstants.track.DOWNLOAD.method;
         
-        return axios({url: url, method: method, responseType: 'arraybuffer'})
+        return axios({url: url, method: method, responseType: 'arraybuffer', headers: {'api-token': process.env.WATAPE_KEY}})
             .then((download) => {
                 console.log('Downloaded: ' + this.track.id);
                 this.store(this.track.name, download.data);

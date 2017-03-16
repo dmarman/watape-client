@@ -17,6 +17,7 @@ class Record extends Track {
     upload() {
         console.log('uploading: ' + this.track.id);
 
+        var headers;
         var url  	= hostUrl + urlConstants.record.UPLOAD.url;
         var method	= urlConstants.record.UPLOAD.method;
 
@@ -27,7 +28,10 @@ class Record extends Track {
         
         data.append('file', fs.createReadStream('./records/' + this.name));
 
-        return axios.post(url, data, {headers: data.getHeaders()})
+        headers = data.getHeaders();
+        headers['api-token'] = process.env.WATAPE_KEY;
+
+        return axios.post(url, data, {headers: headers})
             .then((response) => {
                 if (response.data.success == true) {
                     console.log('uploaded: ' + response.data.record.track_id);
