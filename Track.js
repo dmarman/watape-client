@@ -66,8 +66,8 @@ class Track {
     download(){
         var url  	= hostUrl + urlConstants.track.DOWNLOAD.url + this.track.id;
         var method	= urlConstants.track.DOWNLOAD.method;
-        
-        return axios({url: url, method: method, responseType: 'arraybuffer', headers: {'api-token': process.env.WATAPE_KEY}})
+
+        return axios({url: url, method: method, headers: {'api-token': process.env.WATAPE_KEY}, responseType: 'arraybuffer'})
             .then((download) => {
                 console.log('Downloaded: ' + this.track.id);
                 this.store(this.track.name, download.data);

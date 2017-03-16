@@ -4,65 +4,65 @@ var urlConstants =  {
     queuedTrack: {
         GET_FIRST_IN: {
             method: 'GET',
-            url: '/queued-track/first-in'
+            url: '/api/queued-track/first-in'
         },
         UPDATE_STATUS: {
             method: 'PUT',
-            url: '/queued-track/'
+            url: '/api/queued-track/'
         }
     },
     track: {
         DOWNLOAD: {
             method: 'GET',
-            url: '/track/download/'
+            url: '/api/track/download/'
         }
     },
     record: {
         UPLOAD: {
             method: 'POST',
-            url: '/record'
+            url: '/api/record'
         }
     },
     queue: {
         GET_QUEUE_WAITING: {
             method: 'GET',
-            url: '/queue/waiting'
+            url: '/api/queue/waiting'
         },
         GET_QUEUE_DOWNLOADED: {
             method: 'GET',
-            url: '/queue/downloaded'
+            url: '/api/queue/downloaded'
         },
         GET_QUEUE_RECORDED: {
             method: 'GET',
-            url: '/queue/recorded'
+            url: '/api/queue/recorded'
         },
         GET_QUEUE_UPLOADED: {
             method: 'GET',
-            url: '/queue/uploaded'
+            url: '/api/queue/uploaded'
         },
         GET_FIRST_WAITING: {
             method: 'GET',
-            url: '/queue/waiting/first'
+            url: '/api/queue/waiting/first'
         },
         GET_FIRST_DOWNLOADED: {
             method: 'GET',
-            url: '/queue/downloaded/first'
+            url: '/api/queue/downloaded/first'
         },
         GET_FIRST_RECORDED: {
             method: 'GET',
-            url: '/queue/recorded/first'
+            url: '/api/queue/recorded/first'
         },
         GET_FIRST_UPLOADED: {
             method: 'GET',
-            url: '/queue/uploaded/first'
+            url: '/api/queue/uploaded/first'
         }
-    },
-    file: {
-        GET_FILE: {
-            method: 'GET',
-            url: '/file/'
-        }
-    }
+    }//,
+    // file: {
+    //     GET_FILE: {
+    //         method: 'GET',
+    //         url: '/api/file/'
+    //     }
+    // }
 };
 
 module.exports = urlConstants;
