@@ -2,10 +2,6 @@
 
 var urlConstants =  {
     queuedTrack: {
-        GET_FIRST_IN: {
-            method: 'GET',
-            url: '/api/queued-track/first-in'
-        },
         UPDATE_STATUS: {
             method: 'PUT',
             url: '/api/queued-track/'
@@ -56,13 +52,7 @@ var urlConstants =  {
             method: 'GET',
             url: '/api/queue/uploaded/first'
         }
-    }//,
-    // file: {
-    //     GET_FILE: {
-    //         method: 'GET',
-    //         url: '/api/file/'
-    //     }
-    // }
+    }
 };
 
 module.exports = urlConstants;
