@@ -13,22 +13,49 @@ class Manager {
         this.uploading    = false;
     }
 
+    // downloader() {
+    //     this.downloading = true;
+    //     queue.first('waiting').then((response) => {
+    //         if(response != null){
+    //             let job = new Job(response);
+    //             job.track.download() //TODO manage when one of the steps fails, script stops running, set status failed and go on working
+    //                 .then(() => {
+    //                     job.put().status('downloaded')
+    //                         .then(() => {
+    //                             this.notification.status(job.job, 'downloaded');
+    //                             this.downloader();
+    //                             if(this.recording == false){
+    //                                 this.recorder();
+    //                             }
+    //                         });
+    //                 });
+    //         } else {
+    //             this.downloading = false;
+    //             console.log('No tracks waiting to be downloaded');
+    //             if(this.recording == false){
+    //                 this.recorder();
+    //             }
+    //         }
+    //     });
+    // }
+
     downloader() {
         this.downloading = true;
         queue.first('waiting').then((response) => {
             if(response != null){
                 let job = new Job(response);
-                job.track.download() //TODO manage when one of the steps fails, script stops running, set status failed and go on working
+                job.track.download()
                     .then(() => {
-                        job.put().status('downloaded')
-                            .then(() => {
-                                this.notification.status(job.job, 'downloaded');
-                                this.downloader();
-                                if(this.recording == false){
-                                    this.recorder();
-                                }
-                            });
+                        return job.put().status('downloaded');
+                    })
+                    .then(() => {
+                        this.notification.status(job.job, 'downloaded');
+                        this.downloader();
+                        if(this.recording == false){
+                            this.recorder();
+                        }
                     });
+
             } else {
                 this.downloading = false;
                 console.log('No tracks waiting to be downloaded');
@@ -38,6 +65,7 @@ class Manager {
             }
         });
     }
+
 
     recorder() {
         this.recording = true;
