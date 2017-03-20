@@ -30,8 +30,8 @@ class Track {
 
         headers = data.getHeaders();
         headers['api-token'] = process.env.WATAPE_KEY;
-        
-        return axios.post(url, data, {headers: headers})
+
+        return axios.post(url, data, {headers: headers, maxRedirects: 0})
                     .then()
                     .catch((error) => {
                         console.log(error);

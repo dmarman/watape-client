@@ -31,7 +31,7 @@ class Record extends Track {
         headers = data.getHeaders();
         headers['api-token'] = process.env.WATAPE_KEY;
 
-        return axios.post(url, data, {headers: headers})
+        return axios.post(url, data, {headers: headers, maxRedirects: 0})
             .then((response) => {
                 if (response.data.success == true) {
                     console.log('uploaded: ' + response.data.record.track_id);
