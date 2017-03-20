@@ -31,6 +31,8 @@ class Record extends Track {
         headers = data.getHeaders();
         headers['api-token'] = process.env.WATAPE_KEY;
 
+        //Bug solution: https://www.bountysource.com/issues/40477305-file-upload-in-node-js-is-broken
+
         return axios.post(url, data, {headers: headers, maxRedirects: 0})
             .then((response) => {
                 if (response.data.success == true) {
