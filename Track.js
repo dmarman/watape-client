@@ -5,6 +5,7 @@ const hostUrl 		= process.env.APP_URL;
 const axios			= require('axios');
 const fs			= require('fs');
 const FormData      = require('form-data');
+const cmd           = require('node-cmd');
 
 class Track {
     constructor(track){
@@ -12,6 +13,7 @@ class Track {
         this.id = track.id;
         this.path = track.path;
         this.name = track.name;
+        this.duration = track.duration;
     }
     
     upload(jobId = null) {
@@ -40,13 +42,23 @@ class Track {
 
     record() {
         console.log('recording: ' + this.id);
-        this.copy('./records/' + this.name, this.path);
-        return new Promise (function(resolve, reject){
-            setTimeout(function(){
-                resolve('success');
-            }, 2000);
-        })
-    }
+        //this.copy('./records/' + this.name, this.path);
+
+        cmd.get(
+            'aplay -v -D plughw:UA25 '+ this.path +'',
+            function(){
+                console.log('ended playing');
+
+            });
+
+        return new Promise ((resolve, reject) => {
+            cmd.get('arecord -f dat -D plughw:UA25 -d '+ this.duration +' records/'+ this.name +'', function(){
+                console.log('stopped recording');
+                return resolve('success');
+            })
+        });
+
+        }
 
     copy(destinationPath, sourcePath){
         fs.readFile(sourcePath, function (err, data) {
