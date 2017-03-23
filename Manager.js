@@ -78,7 +78,7 @@ class Manager {
                     .then((response) => {
                         job.put().status('uploaded')
                             .then(() => {
-                                this.notification.status(job.job, 'uploaded');
+                                this.notification.status(job.job, 'uploaded', response.data.record);
                                 record.delete();
                                 this.uploader();
                             });
