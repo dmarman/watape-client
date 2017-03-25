@@ -13,7 +13,8 @@ class Track {
         this.id = track.id;
         this.path = track.path;
         this.name = track.name;
-        this.duration = track.duration;
+        this.recordEndOffset = 1;
+        this.duration = Number(track.duration) + this.recordEndOffset;
     }
     
     upload(jobId = null) {
@@ -41,9 +42,8 @@ class Track {
     }
 
     record() {
-        console.log('recording: ' + this.id);
-        //this.copy('./records/' + this.name, this.path);
 
+        console.log('recording: ' + this.id);
         cmd.get(
             'aplay -v -D plughw:UA25 '+ this.path +'',
             function(){
@@ -52,7 +52,9 @@ class Track {
             });
 
         return new Promise ((resolve, reject) => {
-            cmd.get('arecord -f dat -D plughw:UA25 -d '+ this.duration +' records/'+ this.name +'', function(){
+            console.log('arecord -f dat -D plughw:UA25 -d '+ this.duration +' records/'+ this.name +'');
+            cmd.get('arecord -f dat -D plughw:UA25 -d '+ this.duration + ' records/'+ this.name +'', function(){
+
                 console.log('stopped recording');
                 return resolve('success');
             })

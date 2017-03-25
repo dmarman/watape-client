@@ -4,6 +4,7 @@ const queue = require('./Queue.js');
 const Job   = require('./Job.js');
 const Notification = require('./Notification.js');
 const Record = require('./Record.js');
+const tape = require('./Tape.js');
 
 class Manager {
     constructor(pusher) {
@@ -44,20 +45,25 @@ class Manager {
         queue.first('downloaded').then((response) => {
             if(response != null) {
                 let job = new Job(response);
-                job.track.record()
-                    .then((response) => {
-                        if (response == 'success') {
-                            job.put().status('recorded')
-                                .then(() => {
-                                    this.notification.status(job.job, 'recorded');
-                                    job.track.delete();
-                                    this.recorder();
-                                    if(this.uploading == false){
-                                        this.uploader();
-                                    }
-                                });
-                        }
-                    });
+                tape.init().then(() => {
+                    tape.record(job.track.duration*1000);
+                    job.track.record()
+                        .then((response) => {
+                            if (response == 'success') {
+                                job.put().status('recorded')
+                                    .then(() => {
+                                        this.notification.status(job.job, 'recorded');
+                                        job.track.delete();
+                                        this.recorder();
+                                        if(this.uploading == false){
+                                            this.uploader();
+                                        }
+                                    });
+                            }
+                        });
+                });
+
+
             } else {
                 this.recording = false;
                 console.log('No tracks waiting to be recorded');

@@ -3,6 +3,8 @@
 const Track         = require('./Track.js');
 const Notification  = require('./Notification');
 const Manager       = require('./Manager.js');
+const tape = require('./Tape.js');
+
 
 class Watape {
     
