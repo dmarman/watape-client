@@ -7,7 +7,9 @@
     "test": "mocha",
     "play:sine": "node ./test/play.js sine",
     "play:noise": "node ./test/play.js noise",
-    "play:sweep": "node ./test/play.js sweep"
+    "play:sweep": "node ./test/play.js sweep",
+    "record:sine": "node ./test/record.js sine",
+    "record:sweep": "node ./test/record.js sweep"
   },
   "author": "",
   "license": "ISC",

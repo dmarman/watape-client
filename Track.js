@@ -52,7 +52,7 @@ class Track {
             });
 
         return new Promise ((resolve, reject) => {
-            console.log('arecord -f dat -D plughw:UA25 -d '+ this.duration +' records/'+ this.name +'');
+            //console.log('arecord -f dat -D plughw:UA25 -d '+ this.duration +' records/'+ this.name +'');
             cmd.get('arecord -f dat -D plughw:UA25 -d '+ this.duration + ' records/'+ this.name +'', function(){
 
                 console.log('stopped recording');
