@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "play:sine": "node ./test/play.js sine",
+    "play:noise": "node ./test/play.js noise",
+    "play:sweep": "node ./test/play.js sweep"
   },
   "author": "",
   "license": "ISC",
