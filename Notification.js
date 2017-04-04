@@ -6,7 +6,8 @@ class Notification {
     }
     
     status(job, jobStatus, record = null){
-        var userChannel = 'private-App.User.' + job.track.user_id;
+        var userChannel = 'private-App.User.' + job.user.id;
+        console.log(userChannel);
         this.pusher.trigger(userChannel, 'App\\Events\\trackStatus', {
             trackQueued: job,
             status: jobStatus,

@@ -10,6 +10,7 @@ class Job {
         this.job = job;
         this.status = job.status;
         this.id = job.id;
+        this.user = job.user;
         this.track = new Track(job.track);
     }
     

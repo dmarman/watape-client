@@ -27,23 +27,24 @@ class Tape {
             //gpio.setup(pin, gpio.DIR_OUT, on);
 
         on();
-            function on() {
-                if (count >= max) {
-                    gpio.destroy(function() {
-                        console.log('Closed pins, now exit');
-                    });
-                    return;
-                }
-
-                setTimeout(function() {
-                    //gpio.write(pin, true, on);
-                    //on();
-                    //count += 1;
-                    gpio.destroy(function() {
-                        console.log('Closed pins, now exit');
-                    });
-                }, delay + 1000);
+        
+        function on() {
+            if (count >= max) {
+                gpio.destroy(function() {
+                    console.log('Closed pins, now exit');
+                });
+                return;
             }
+
+            setTimeout(function() {
+                //gpio.write(pin, true, on);
+                //on();
+                //count += 1;
+                gpio.destroy(function() {
+                    console.log('Closed pins, now exit');
+                });
+            }, delay);
+        }
        
 
     }

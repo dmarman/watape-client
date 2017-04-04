@@ -36,7 +36,7 @@ class Record extends Track {
         return axios.post(url, data, {headers: headers, maxRedirects: 0})
             .then((response) => {
                 if (response.data.success == true) {
-                    console.log('uploaded: ' + response.data.record.track_id);
+                    console.log('uploaded: ' + response.data.record.id);
                     return response
                 }
             })
