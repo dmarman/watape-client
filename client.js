@@ -25,7 +25,7 @@ const watape = new Watape(pusher);
 watape.init();
 
 socket.bind('App\\Events\\newTrackQueued',
-    function(data) {
+    function(data) { //TODO check what message is comming, can save API calls
         if(watape.manager.downloading == false){
             watape.manager.downloading = true;
             watape.manager.downloader();
