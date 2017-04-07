@@ -18,11 +18,11 @@ const pusher = new Pusher({
 	encrypted: 	true
 });
 
-const my_channel = socket.subscribe('private-Tape.Client');
-
 const watape = new Watape(pusher);
 
 watape.init();
+
+const my_channel = socket.subscribe('private-Tape.Client');
 
 socket.bind('App\\Events\\newTrackQueued',
     function(data) { //TODO check what message is comming, can save API calls
