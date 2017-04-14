@@ -46,10 +46,10 @@ class Manager {
             if(response != null) {
                 let job = new Job(response);
                 tape.init().then(() => {
-                    tape.record(job.track.duration*1000);
                     job.track.record()
                         .then((response) => {
                             if (response == 'success') {
+                                tape.stop();
                                 job.put().status('recorded')
                                     .then(() => {
                                         this.notification.status(job.job, 'recorded');
