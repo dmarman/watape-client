@@ -9,7 +9,8 @@
     "play:noise": "node ./commands/play.js noise",
     "play:sweep": "node ./commands/play.js sweep",
     "record:sine": "node ./commands/record.js sine",
-    "record:sweep": "node ./comands/record.js sweep"
+    "record:sweep": "node ./commands/record.js sweep",
+    "db:seed": "node ./commands/db.js seed"
   },
   "author": "",
   "license": "ISC",
