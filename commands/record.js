@@ -5,15 +5,15 @@ const stimulus = process.argv[2] + '.wav';
 
 console.log('recording: ' + stimulus);
 
-cmd.get('aplay -v -D plughw:UA25 ./test/audio/' + stimulus + '',() => {
+cmd.get('aplay -v -D plughw:UA25 ./commands/audio/' + stimulus + '',() => {
     console.log('ended playing');
 });
 
-cmd.get('arecord -f dat -D plughw:UA25 -d 11 test/audio/test.wav', function(){
+cmd.get('arecord -f dat -D plughw:UA25 -d 11 commands/audio/test.wav', function(){
     console.log('stopped recording, playing playback...');
 
     function replay() {
-        cmd.get('aplay -v -D plughw:UA25 test/audio/test.wav',() => {
+        cmd.get('aplay -v -D plughw:UA25 commands/audio/test.wav',() => {
             replay();
         });
     }

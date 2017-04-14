@@ -1,8 +1,8 @@
 .env
 .idea/
 node_modules/
-tracks/
-records/
+tracks/*
+records/*
 /gpio.js
 /debug.js
 /database/documents/*
