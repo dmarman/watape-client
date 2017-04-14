@@ -1,29 +1,26 @@
 'use strict';
 
-const gpio = require('rpi-gpio');
+var rpio = require('rpio');
 
 class Tape {
 
     init() {
         return new Promise(function(resolve) {
-            var pin = 36;
-                        
-            gpio.setup(pin, gpio.DIR_OUT, on);
-
-            function on() {
-                gpio.write(pin, true);
-            }
+            rpio.open(36, rpio.OUTPUT, rpio.HIGH);
+            rpio.pud(36, rpio.PULL_OFF);
             
             setTimeout(resolve, 5000)
         });
     }
     
-    record(delay) {
+    stopDelay(delay) {
         setTimeout(function() {
-            gpio.destroy(function() {
-                console.log('Closed pins, now exit');
-            });
+            rpio.close(36);
         }, delay);
+    }
+    
+    stop() {
+        rpio.close(36);
     }
 }
 
