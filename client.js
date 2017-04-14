@@ -22,13 +22,17 @@ const watape = new Watape(pusher);
 
 watape.init();
 
-const my_channel = socket.subscribe('private-Tape.Client');
+const channel = socket.subscribe('Tape.Client');
 
-socket.bind('App\\Events\\newTrackQueued',
+channel.bind('App\\Events\\newTrackQueued',
     function(data) { //TODO check what message is comming, can save API calls
-        if(watape.manager.downloading == false){
-            watape.manager.downloading = true;
-            watape.manager.downloader();
-        }
+        spark();
     }
 );
+
+function spark() {
+	if(watape.manager.downloading == false){
+		watape.manager.downloading = true;
+		watape.manager.downloader();
+	}
+}

@@ -4,3 +4,4 @@ node_modules/
 tracks/
 records/
 /gpio.js
+/debug.js
