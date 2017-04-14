@@ -5,3 +5,4 @@ tracks/
 records/
 /gpio.js
 /debug.js
+/database/*

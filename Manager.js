@@ -7,11 +7,12 @@ const Record = require('./Record.js');
 const tape = require('./Tape.js');
 
 class Manager {
-    constructor(pusher) {
+    constructor(pusher, db) {
         this.notification = new Notification(pusher);
         this.downloading  = false;
         this.recording    = false;
         this.uploading    = false;
+        this.db           = db;
     }
 
     downloader() {
