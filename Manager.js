@@ -17,17 +17,17 @@ class Manager {
 
     downloader() {
         this.downloading = true;
-        queue.first('waiting').then((response) => {
-            if(response != null){
-                let job = new Job(response);
+        queue.first('waiting').then((task) => {
+            if(task != null){
+                let job = new Job(task);
                 this.notification.status(job.job, 'downloading');
                 job.track.download()
                     .then(() => {
-                        return job.put().status('downloaded');
+                        this.notification.status(job.job, 'downloaded');
+                        return job.put().status('downloaded'); //Update database status, only after should the db be queried again
                     })
                     .then(() => {
-                        this.notification.status(job.job, 'downloaded');
-                        this.downloader();
+                        this.downloader(); 
                         if(this.recording == false){
                             this.recorder();
                         }
@@ -44,29 +44,26 @@ class Manager {
 
     recorder() {
         this.recording = true;
-        queue.first('downloaded').then((response) => {
-            if(response != null) {
-                let job = new Job(response);
+        queue.first('downloaded').then((task) => {
+            if(task != null) {
+                let job = new Job(task);
                 this.notification.status(job.job, 'recording');
-                tape.init().then(() => {
-                    job.track.record()
-                        .then((response) => {
-                            if (response == 'success') {
-                                tape.stop();
-                                job.put().status('recorded')
-                                    .then(() => {
-                                        this.notification.status(job.job, 'recorded');
-                                        job.track.delete();
-                                        this.recorder();
-                                        if(this.uploading == false){
-                                            this.uploader();
-                                        }
-                                    });
-                            }
-                        });
-                });
-
-
+                tape.init()
+                    .then(() => {
+                        return job.track.record()
+                    })
+                    .then(() => {
+                        tape.stop();
+                        this.notification.status(job.job, 'recorded');
+                        return job.put().status('recorded')
+                    })
+                    .then(() => {
+                        job.track.delete();
+                        this.recorder();
+                        if(this.uploading == false){
+                            this.uploader();
+                        }
+                    });
             } else {
                 this.recording = false;
                 console.log('No tracks waiting to be recorded');
@@ -79,19 +76,19 @@ class Manager {
 
     uploader() {
         this.uploading = true;
-        queue.first('recorded').then((response) => {
-            if(response != null) {
-                let job = new Job(response);
+        queue.first('recorded').then((task) => {
+            if(task != null) {
+                let job = new Job(task);
                 this.notification.status(job.job, 'uploading');
-                let record = new Record(response);
+                let record = new Record(task);
                 record.upload()
                     .then((response) => {
-                        job.put().status('uploaded')
-                            .then(() => {
-                                this.notification.status(job.job, 'uploaded', response.data.record);
-                                record.delete();
-                                this.uploader();
-                            });
+                        this.notification.status(job.job, 'uploaded', response.data.record);
+                        return job.put().status('uploaded')
+                    })
+                    .then(() => {
+                        record.delete();
+                        this.uploader();
                     });
             } else {
                 this.uploading = false;
