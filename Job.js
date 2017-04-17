@@ -28,7 +28,7 @@ class Job {
                         console.log('Status: ' + response.data.status);
                     })
                     .catch(function (error) {
-                        console.log('Could not putStatus');
+                        console.log('Could not put().status of job');
                         console.log(error);
                     });
             }

@@ -20,6 +20,7 @@ class Manager {
         queue.first('waiting').then((response) => {
             if(response != null){
                 let job = new Job(response);
+                this.notification.status(job.job, 'downloading');
                 job.track.download()
                     .then(() => {
                         return job.put().status('downloaded');
@@ -46,6 +47,7 @@ class Manager {
         queue.first('downloaded').then((response) => {
             if(response != null) {
                 let job = new Job(response);
+                this.notification.status(job.job, 'recording');
                 tape.init().then(() => {
                     job.track.record()
                         .then((response) => {
@@ -80,6 +82,7 @@ class Manager {
         queue.first('recorded').then((response) => {
             if(response != null) {
                 let job = new Job(response);
+                this.notification.status(job.job, 'uploading');
                 let record = new Record(response);
                 record.upload()
                     .then((response) => {
