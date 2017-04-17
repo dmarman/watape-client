@@ -5,17 +5,19 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "play:sine": "node ./test/play.js sine",
-    "play:noise": "node ./test/play.js noise",
-    "play:sweep": "node ./test/play.js sweep",
-    "record:sine": "node ./test/record.js sine",
-    "record:sweep": "node ./test/record.js sweep"
+    "play:sine": "node ./commands/play.js sine",
+    "play:noise": "node ./commands/play.js noise",
+    "play:sweep": "node ./commands/play.js sweep",
+    "record:sine": "node ./commands/record.js sine",
+    "record:sweep": "node ./commands/record.js sweep",
+    "db:seed": "node ./commands/db.js seed"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.15.3",
     "dotenv": "^4.0.0",
+    "nedb": "^1.8.0",
     "node-cmd": "^2.0.0",
     "pusher": "^1.5.1",
     "pusher-client": "^1.1.0",

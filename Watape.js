@@ -8,9 +8,9 @@ const tape = require('./Tape.js');
 
 class Watape {
     
-	constructor(pusher) {
+	constructor(pusher, db) {
 		this.pusher	= pusher;
-		this.manager = new Manager(pusher);
+		this.manager = new Manager(pusher, db);
 	}
 
 	init(){
