@@ -13,7 +13,7 @@ class Track {
         this.id = track.id;
         this.path = track.path;
         this.name = track.name;
-        this.recordEndOffset = 5;
+        this.recordEndOffset = 10;
         this.duration = Number(track.duration) + this.recordEndOffset;
     }
     
@@ -45,7 +45,7 @@ class Track {
         console.log('recording: ' + this.id);
         setTimeout(() => {
             cmd.get(
-                'aplay -v -f dat -D plughw:UA25 '+ this.path +'',
+                'aplay -v -f cd -D plughw:UA25 '+ this.path +'',
                 function(err, data){
                     if (!err) {
                         console.log(data)
@@ -54,11 +54,11 @@ class Track {
                     }
                     console.log('ended playing');
                 });
-        }, 2000);
+        }, 4000);
         
         return new Promise ((resolve, reject) => {
             //console.log('arecord -f dat -D plughw:UA25 -d '+ this.duration +' records/'+ this.name +'');
-            cmd.get('arecord -f dat --buffer-size=96000 -D plughw:UA25 -d '+ this.duration + ' records/'+ this.name +'', function(err, data){
+            cmd.get('arecord -f cd --buffer-size=192000 -D plughw:UA25 -d '+ Math.round(this.duration) + ' records/'+ this.name +'', function(err, data){
                 
                 if (!err) {
                     console.log(data)
