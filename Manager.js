@@ -27,7 +27,7 @@ class Manager {
                         return job.put().status('downloaded'); //Update database status, only after should the db be queried again
                     })
                     .then(() => {
-                        this.downloader(); 
+                        this.downloader(); //queries db for queued downloads
                         if(this.recording == false){
                             this.recorder();
                         }

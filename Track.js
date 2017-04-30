@@ -44,8 +44,8 @@ class Track {
     record() {
         console.log('recording: ' + this.id);
         setTimeout(() => {
-            cmd.get(
-                'aplay -v -f cd -D plughw:UA25 '+ this.path +'',
+            //0.1
+            cmd.get('play --volume 1 '+ this.path +'',
                 function(err, data){
                     if (!err) {
                         console.log(data)
@@ -58,15 +58,22 @@ class Track {
         
         return new Promise ((resolve, reject) => {
             //console.log('arecord -f dat -D plughw:UA25 -d '+ this.duration +' records/'+ this.name +'');
-            cmd.get('arecord -f cd --buffer-size=192000 -D plughw:UA25 -d '+ Math.round(this.duration) + ' records/'+ this.name +'', function(err, data){
-                
+            cmd.get('arecord -f cd --buffer-size=192000 -D plughw:UA25 -d '+ Math.round(this.duration) + ' records/'+ this.name +'', (err, data) => {
+            //cmd.get('rec records/'+ this.name +' trim 0 '+ Math.round(this.duration), (err, data) => {
+
                 if (!err) {
                     console.log(data)
                 } else {
                     console.log('error: ', err)
                 }
-                console.log('stopped recording');
-                return resolve('success');
+                //4.54
+                cmd.get('sox --volume 1.38 records/' + this.name + ' records/EQ_' + this.name + ' equalizer 40 0.6 +6 equalizer 12000 1.1 +8', () => {
+                    cmd.get('sudo rm records/' + this.name,() => {
+                        cmd.get('sudo mv records/EQ_' + this.name + ' records/' + this.name, () => {
+                            return resolve('success');
+                        });
+                    });
+                });
             })
         });
 
