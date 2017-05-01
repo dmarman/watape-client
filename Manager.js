@@ -47,10 +47,10 @@ class Manager {
         queue.first('downloaded').then((task) => {
             if(task != null) {
                 let job = new Job(task);
-                this.notification.status(job.job, 'recording');
+                this.notification.status(job.job, 'recording'); 
                 tape.init()
                     .then(() => {
-                        return job.track.record()
+                        return job.track.record(task.configuration)
                     })
                     .then(() => {
                         tape.stop();

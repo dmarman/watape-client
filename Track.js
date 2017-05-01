@@ -41,11 +41,24 @@ class Track {
                     });
     }
 
-    record() {
+    record(configuration) {
         console.log('recording: ' + this.id);
+        let volumePlay = 1;
+        let volumePostProcessed = 1.38;
+        
+        if(configuration.parameter_1 === 1){
+            volumePlay = 0.21;
+            volumePostProcessed = 4.54;
+        }
+
+        if(configuration.parameter_1 === 2){
+            volumePlay = 0.63;
+            volumePostProcessed = 1.9;
+        }
+        
         setTimeout(() => {
             //0.1
-            cmd.get('play --volume 1 '+ this.path +'',
+            cmd.get('play --volume ' + volumePlay + ' '+ this.path +'',
                 function(err, data){
                     if (!err) {
                         console.log(data)
@@ -67,7 +80,7 @@ class Track {
                     console.log('error: ', err)
                 }
                 //4.54
-                cmd.get('sox --volume 1.38 records/' + this.name + ' records/EQ_' + this.name + ' equalizer 40 0.6 +6 equalizer 12000 1.1 +8', () => {
+                cmd.get('sox --volume ' + volumePostProcessed + ' records/' + this.name + ' records/EQ_' + this.name + ' equalizer 40 0.6 +6 equalizer 12000 1.1 +8', () => {
                     cmd.get('sudo rm records/' + this.name,() => {
                         cmd.get('sudo mv records/EQ_' + this.name + ' records/' + this.name, () => {
                             return resolve('success');
