@@ -58,7 +58,7 @@ class Track {
         
         setTimeout(() => {
             //0.1
-            cmd.get('play --volume ' + volumePlay + ' '+ this.path +'',
+            cmd.get('play --volume ' + volumePlay + ' --buffer 192000 '+ this.path +'',
                 function(err, data){
                     if (!err) {
                         console.log(data)
