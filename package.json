@@ -17,6 +17,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "dotenv": "^4.0.0",
+    "form-data": "^2.1.4",
     "nedb": "^1.8.0",
     "node-cmd": "^2.0.0",
     "pusher": "^1.5.1",

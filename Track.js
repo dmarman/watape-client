@@ -6,6 +6,8 @@ const axios			= require('axios');
 const fs			= require('fs');
 const FormData      = require('form-data');
 const cmd           = require('node-cmd');
+const exec = require('child_process').exec;
+
 
 class Track {
     constructor(track){
@@ -45,49 +47,49 @@ class Track {
         console.log('recording: ' + this.id);
         let volumePlay = 1;
         let volumePostProcessed = 1.38;
-        
-        if(configuration.parameter_1 === 1){
-            volumePlay = 0.21;
-            volumePostProcessed = 4.54;
+
+        if(configuration != null){ //API does not give a default value. At the beggining there was no HW configuration.
+            if(configuration.parameter_1 === 1){
+                volumePlay = 0.21;
+                volumePostProcessed = 4.54;
+            }
+
+            if(configuration.parameter_1 === 2){
+                volumePlay = 0.63;
+                volumePostProcessed = 1.9;
+            }
         }
 
-        if(configuration.parameter_1 === 2){
-            volumePlay = 0.63;
-            volumePostProcessed = 1.9;
-        }
-        
         setTimeout(() => {
-            //0.1
             cmd.get('play --volume ' + volumePlay + ' --buffer 192000 '+ this.path +'',
-                function(err, data){
-                    if (!err) {
-                        console.log(data)
-                    } else {
-                        console.log('error: ', err)
-                    }
+                function(data, err){
                     console.log('ended playing');
                 });
         }, 4000);
-        
-        return new Promise ((resolve, reject) => {
-            //console.log('arecord -f dat -D plughw:UA25 -d '+ this.duration +' records/'+ this.name +'');
-            cmd.get('arecord -f cd --buffer-size=192000 -D plughw:UA25 -d '+ Math.round(this.duration) + ' records/'+ this.name +'', (err, data) => {
-            //cmd.get('rec records/'+ this.name +' trim 0 '+ Math.round(this.duration), (err, data) => {
 
-                if (!err) {
-                    console.log(data)
-                } else {
-                    console.log('error: ', err)
+        //console.log('arecord -f dat -D plughw:UA25 -d '+ this.duration +' records/'+ this.name +'');
+        //cmd.get('rec records/'+ this.name +' trim 0 '+ Math.round(this.duration), (err, data) => {
+
+        return new Promise ((resolve, reject) => {
+            exec('soxi -D ' + this.path, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    return;
                 }
-                //4.54
-                cmd.get('sox --volume ' + volumePostProcessed + ' records/' + this.name + ' records/EQ_' + this.name + ' equalizer 40 0.6 +6 equalizer 12000 1.1 +8', () => {
-                    cmd.get('sudo rm records/' + this.name,() => {
-                        cmd.get('sudo mv records/EQ_' + this.name + ' records/' + this.name, () => {
-                            return resolve('success');
+                var soxDuration = stdout;
+
+                cmd.get('arecord -f cd --buffer-size=192000 -D plughw:UA25 -d '+ Math.round(Number(soxDuration) + Number(this.recordEndOffset)) + ' records/'+ this.name +'', (data, err) => {
+                    cmd.get('sox --volume ' + volumePostProcessed + ' records/' + this.name + ' records/EQ_' + this.name + ' equalizer 40 0.6 +6 equalizer 12000 1.1 +8', () => {
+                        cmd.get('sudo rm records/' + this.name,() => {
+                            cmd.get('sudo mv records/EQ_' + this.name + ' records/' + this.name, () => {
+                                return resolve('success');
+                            });
                         });
                     });
                 });
-            })
+                
+            });
+            
         });
 
         }
